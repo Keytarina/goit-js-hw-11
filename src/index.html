@@ -4,15 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Homework 11</title>
-    <link rel="stylesheet" href="./sass/index.scss" />
+    <link rel="stylesheet" href="./styles/index.css" />
   </head>
   <body>
-    <div class="select-container">
-      <select class="picture-select"></select>
-    </div>
+    <form class="search-form" id="search-form">
+      <input
+        type="text"
+        name="searchQuery"
+        autocomplete="off"
+        placeholder="Search images..."
+      />
+      <button type="submit">Search</button>
+    </form>
     <ul class="picture-list"></ul>
+    <button class="load-btn">Load more</button>
 
-    <script type="module" src="./index.js"></script>
-    <script type="module" src="./api.js"></script>
+    <script type="module" src="./js/index.js"></script>
+    <script type="module" src="./js/api.js"></script>
   </body>
 </html>
