@@ -1,29 +1,84 @@
-import fetchPictures from './pixabay-api.js';
+import PixabayAPIService from './pixabay-api.js';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-
+// Посилання
 const refs = {
   formSubmit: document.querySelector('form.search-form'),
-  input: document.querySelector('form>input'),
+  //   input: document.querySelector('form>input'),
   gallery: document.querySelector('ul.gallery'),
   loadBtn: document.querySelector('button.load-btn'),
 };
+const pixabayAPIService = new PixabayAPIService();
 
+// Слухач події submit
 refs.formSubmit.addEventListener('submit', onFormSubmit);
-
-function onFormSubmit(event) {
+refs.loadBtn.addEventListener('click', loadMorePictures);
+// Функція, що відправляє запит на сервер
+//і передає результати у функцію яка рендерить картки в галереї
+async function onFormSubmit(event) {
   event.preventDefault();
-  refs.gallery.innerHTML = '';
-
   const inputValue = event.target.searchQuery.value.trim();
+  refs.gallery.innerHTML = '';
+  refs.loadBtn.classList.add('is-hidden');
+  pixabayAPIService.resetPageNumber();
 
-  fetchPictures(inputValue).then(data => {
-    renderCard(data);
-    refs.loadBtn.classList.toggle('is-hidden');
-  });
+  if (inputValue === '') {
+    Notify.failure('The input field cannot be empty!');
+    return;
+  }
+
+  try {
+    pixabayAPIService.searchQuery = inputValue;
+    const data = await pixabayAPIService.fetchPictures();
+
+    if (data.totalHits === 0) {
+      Notify.warning(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
+    } else if (
+      pixabayAPIService.page ===
+      Math.ceil(data.totalHits / pixabayAPIService.perPage)
+    ) {
+      Notify.info(`Hooray! We found ${data.totalHits} images.`);
+      renderCard(data);
+    } else {
+      Notify.info(`Hooray! We found ${data.totalHits} images.`);
+      renderCard(data);
+      refs.loadBtn.classList.remove('is-hidden');
+    }
+  } catch (error) {
+    Notify.failure('Oops, something got wrong, try to reboot page!');
+    console.log(error);
+  }
 }
 
+async function loadMorePictures(event) {
+  try {
+    pixabayAPIService.incrementPageNumber();
+    const data = await pixabayAPIService.fetchPictures();
+    renderCard(data);
+
+    if (
+      pixabayAPIService.page ===
+      Math.ceil(data.totalHits / pixabayAPIService.perPage)
+    ) {
+      renderCard(data);
+      refs.loadBtn.classList.add('is-hidden');
+      Notify.warning(
+        "We're sorry, but you've reached the end of search results."
+      );
+    } else {
+      renderCard(data);
+    }
+  } catch (error) {
+    Notify.failure('Oops, something got wrong, try to reboot page!');
+    console.log(error);
+  }
+}
+
+// Функція яка рендерить картки в галереї
 function renderCard(data) {
   const markup = data.hits
     .map(card => {
