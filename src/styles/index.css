@@ -11,6 +11,19 @@
     padding: 20px 20px;
     background-color: rgb(138, 144, 224);
 }
+button.submit-btn {
+    display: inline-block;
+    width: 100px;
+    padding: 5px 10px;
+    background-color: rgb(138, 144, 224);
+    border: 2px solid rgb(153, 158, 218);
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    transition-duration: 0.4s;
+}
 .section-gallery {
   display: flex;
   flex-direction: column;
@@ -70,5 +83,10 @@ button.load-btn {
 button.load-btn:hover, button.load-btn:focus {
     cursor: pointer;
     background-color: rgb(67, 77, 192);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+button.submit-btn:hover, button.submit-btn:focus {
+    cursor: pointer;
+    background-color: rgb(153, 158, 218);
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }

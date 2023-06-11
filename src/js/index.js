@@ -34,14 +34,15 @@ async function onFormSubmit(event) {
 
     if (data.totalHits === 0) {
       Notify.warning(
-        'Sorry, there are no images matching your search query. Please try again.'
+        'Sorry, there are no images matching your search query. Please try again.',
+        2000
       );
       return;
     } else if (
       pixabayAPIService.page ===
       Math.ceil(data.totalHits / pixabayAPIService.perPage)
     ) {
-      Notify.info(`Hooray! We found ${data.totalHits} images.`);
+      Notify.info(`Hooray! We found ${data.totalHits} images.`, 2000);
       renderCard(data);
     } else {
       Notify.info(`Hooray! We found ${data.totalHits} images.`);
@@ -49,7 +50,7 @@ async function onFormSubmit(event) {
       refs.loadBtn.classList.remove('is-hidden');
     }
   } catch (error) {
-    Notify.failure('Oops, something got wrong, try to reboot page!');
+    Notify.failure('Oops, something got wrong, try to reboot page!', 2000);
     console.log(error);
   }
 }
@@ -67,13 +68,14 @@ async function loadMorePictures(event) {
       renderCard(data);
       refs.loadBtn.classList.add('is-hidden');
       Notify.warning(
-        "We're sorry, but you've reached the end of search results."
+        "We're sorry, but you've reached the end of search results.",
+        2000
       );
     } else {
       renderCard(data);
     }
   } catch (error) {
-    Notify.failure('Oops, something got wrong, try to reboot page!');
+    Notify.failure('Oops, something got wrong, try to reboot page!', 2000);
     console.log(error);
   }
 }
