@@ -4,6 +4,8 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '37101348-01b9475ae8f5d0f542cc9660e';
 
+const page = 1;
+
 export default async function fetchPictures(inputValue) {
   const params = new URLSearchParams({
     key: API_KEY,

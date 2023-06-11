@@ -7,6 +7,7 @@ const refs = {
   formSubmit: document.querySelector('form.search-form'),
   input: document.querySelector('form>input'),
   gallery: document.querySelector('ul.gallery'),
+  loadBtn: document.querySelector('button.load-btn'),
 };
 
 refs.formSubmit.addEventListener('submit', onFormSubmit);
@@ -19,6 +20,7 @@ function onFormSubmit(event) {
 
   fetchPictures(inputValue).then(data => {
     renderCard(data);
+    refs.loadBtn.classList.toggle('is-hidden');
   });
 }
 
