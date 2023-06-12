@@ -10,6 +10,7 @@ const refs = {
   loadBtn: document.querySelector('button.load-btn'),
 };
 const pixabayAPIService = new PixabayAPIService();
+let gallery = '';
 
 // Слухач події submit
 refs.formSubmit.addEventListener('submit', onFormSubmit);
@@ -31,22 +32,20 @@ async function onFormSubmit(event) {
   try {
     pixabayAPIService.searchQuery = inputValue;
     const data = await pixabayAPIService.fetchPictures();
+    renderCard(data);
 
     if (data.totalHits === 0) {
       Notify.warning(
         'Sorry, there are no images matching your search query. Please try again.',
         2000
       );
-      return;
     } else if (
       pixabayAPIService.page ===
       Math.ceil(data.totalHits / pixabayAPIService.perPage)
     ) {
       Notify.info(`Hooray! We found ${data.totalHits} images.`, 2000);
-      renderCard(data);
     } else {
       Notify.info(`Hooray! We found ${data.totalHits} images.`);
-      renderCard(data);
       refs.loadBtn.classList.remove('is-hidden');
     }
   } catch (error) {
@@ -59,20 +58,18 @@ async function loadMorePictures(event) {
   try {
     pixabayAPIService.incrementPageNumber();
     const data = await pixabayAPIService.fetchPictures();
+    gallery.destroy();
     renderCard(data);
 
     if (
       pixabayAPIService.page ===
       Math.ceil(data.totalHits / pixabayAPIService.perPage)
     ) {
-      renderCard(data);
       refs.loadBtn.classList.add('is-hidden');
       Notify.warning(
         "We're sorry, but you've reached the end of search results.",
         2000
       );
-    } else {
-      renderCard(data);
     }
   } catch (error) {
     Notify.failure('Oops, something got wrong, try to reboot page!', 2000);
@@ -110,8 +107,7 @@ function renderCard(data) {
     })
     .join('');
   refs.gallery.insertAdjacentHTML('beforeend', markup);
-
-  new SimpleLightbox('.gallery a', {
+  gallery = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: 250,
   });
